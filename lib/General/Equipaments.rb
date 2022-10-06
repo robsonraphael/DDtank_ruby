@@ -1,102 +1,22 @@
-# Module Equipaments DDtank
+require './General/Base'
 module Equipaments
-  # Class Hat
-  class Hat
-    def initialize(attack, defense, agility, luck)
-      @atk = attack
-      @def = defense
-      @agi = agility
-      @luc = luck
-    end
-  end
+  class Weapon < Base::Equipaments
+    def info
+      puts <<~INFO
+        ========================
+        Nome da Arma: #{@name}
+        Tipo: #{@type}
+        Nível: #{@level}
 
-  # Class Clothing
-  class Clothing
-    def initialize(attack, defense, agility, luck)
-      @atk = attack
-      @def = defense
-      @agi = agility
-      @luc = luck
-    end
-  end
+        ========================
+            A T R I B U T O S
+        ========================
 
-  # Class Earring
-  class Earring
-    def initialize(attack, defense, agility, luck)
-      @atk = attack
-      @def = defense
-      @agi = agility
-      @luc = luck
-    end
-  end
-
-  # Class Hair
-  class Hair
-    def initialize(attack, defense, agility, luck)
-      @atk = attack
-      @def = defense
-      @agi = agility
-      @luc = luck
-    end
-  end
-
-  # Class Eye
-  class Eye
-    def initialize(attack, defense, agility, luck)
-      @atk = attack
-      @def = defense
-      @agi = agility
-      @luc = luck
-    end
-  end
-
-  # Class Glasses
-  class Glasses
-    def initialize(attack, defense, agility, luck)
-      @atk = attack
-      @def = defense
-      @agi = agility
-      @luc = luck
-    end
-  end
-
-  # Class Texudo
-  class Texudo
-    def initialize(attack, defense, agility, luck)
-      @atk = attack
-      @def = defense
-      @agi = agility
-      @luc = luck
-    end
-  end
-
-  # Class Wing
-  class Wing
-    def initialize(attack, defense, agility, luck)
-      @atk = attack
-      @def = defense
-      @agi = agility
-      @luc = luck
-    end
-  end
-
-  # Class Weapon
-  class Weapon
-    def initialize(attack, defense, agility, luck)
-      @atk = attack
-      @def = defense
-      @agi = agility
-      @luc = luck
-    end
-  end
-
-  # Class Shield
-  class Shield
-    def initialize(attack, defense, agility, luck)
-      @atk = attack
-      @def = defense
-      @agi = agility
-      @luc = luck
+        ATAQUE : #{@attack}
+        DEFESA : #{@defense}
+        AGILIDADE : #{@agility}
+        SORTE : #{@luck}
+      INFO
     end
   end
 end
