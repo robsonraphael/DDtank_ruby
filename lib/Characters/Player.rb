@@ -1,68 +1,80 @@
 require_relative '../General/Characters'
 
-class Player < Character
-  def initialize(*args)
+class Player < Characters
+  attr_reader :name, :exp
+
+  def initialize(hash)
     super
+    @username = [:username]
+    @password = [:password]
+
     @exp = 0
     @exp_max = 0
     @exp_table = []
+
+    set_maximum_level
+    set_experience_table
+    set_exp_max
   end
 
-  def level_max(level)
-    @level_max = level.freeze
+  def set_maximum_level(level = 45)
+    @@maximum_level = level.to_i.freeze
   end
-  public :level_max
+  private :set_maximum_level
 
-  def set_exp_table(*args)
-    @exp_table = Array.new(@level_max, 1)
-
-    @exp_table.each_with_index do |_element, index|
-      @exp_table[index] = *args[index]
+  def set_experience_table
+    @exp_table = Array.new((@@maximum_level - 1))
+    for i in (1..@@maximum_level).to_a
+      @exp_table[i - 1] = (Math.exp(i).to_i * @@maximum_level) / Math.log(@@maximum_level).to_i
     end
-    @exp_table.flatten!.freeze
+    @exp_table
   end
-  public :set_exp_table
+  private :set_experience_table
 
   def exp_required_for_level(level)
-    @exp_table[level - @level - 1]
+    @exp_table[level]
   end
-  public :exp_required_for_level
+  private :exp_required_for_level
 
-  def calculate_required_exp(from_level, to_level)
+  def calculate_required_exp(from_level = @level, to_level)
     results = []
-
     (from_level..to_level).each do |level|
-      results.push(exp_required_for_level(level))
+      results << exp_required_for_level(level)
     end
-    results.flatten!
-    value = 0
-    results.each { |e| value += e }
-
-    value
+    p "Para o Nível #{to_level} você precisa de #{results.reduce(:+)} pontos de exp"
   end
   public :calculate_required_exp
 
   def set_exp_max
+    return false if max_level?
+
     @exp_max = @exp_table[@level - 1]
+    true
   end
   private :set_exp_max
 
-  def exp_status
-    puts "Nível: #{@level}"
-    puts "Experiencia Atual: #{@exp}"
-    puts "Experiencia Para o proximo nivel: #{@exp_max - @exp}"
+  def status
+    puts <<~INFO
+      ======================================================
+      Nível: #{@level}
+      Experiencia Atual: #{@exp}
+      Experiencia Para o proximo nivel: #{@exp_max - @exp}
+    INFO
+    showing_attributes
   end
-  public :exp_status
+  public :status
 
   def max_level?
-    @level == @level_max
+    @level == @@maximum_level
   end
   private :max_level?
 
   def increase_exp(exp)
+    return false if max_level?
+
     @exp += exp
-    @exp_max = @exp_table[0] if @level == 1
-    level_up if @exp >= @exp_max
+    level_up if @exp > @exp_max
+    true
   end
   public :increase_exp
 
@@ -74,27 +86,9 @@ class Player < Character
   def level_up
     decrease_exp(@exp_max)
     @level += 1
+    @exp_table.delete(@exp_table[@level - 1])
     set_exp_max
+    true
   end
   private :level_up
-
-  def movement(direction)
-    case direction
-    when 'left'
-      puts 'Andando para esquerda'
-    when 'right'
-      puts 'Andando para direita'
-    end
-  end
-  public :movement
-
-  def angle(direction)
-    case direction
-    when 'up'
-      puts "Subindo o angulo..."
-    when 'down'
-      puts "Descendo o angulo..."
-    end
-  end
-  public :angle
 end

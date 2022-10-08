@@ -11,10 +11,10 @@ module Attributes
     # Mostrar Atributos
     def showing_attributes
       puts '======================='
-      @attributes.each_pair { |key, value| puts "#{key} => #{value}" }
+      @attributes.each_pair { |key, value| puts "#{key}: #{value}" }
       puts '======================='
     end
-    public :showing_attributes
+    private :showing_attributes
 
     def update_attributes(level = @level)
       @attributes[:attack] += (2 + level)
