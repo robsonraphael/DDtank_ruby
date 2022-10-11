@@ -1,12 +1,13 @@
-require_relative 'Attributes'
+# frozen_string_literal: true
+
+require_relative 'attributes'
 require 'securerandom'
 
-# Class Character
+# Class base personagem
 class Characters < Attributes::Force
-  attr_reader :level
+  attr_reader :level, :class, :genre, :name
 
   def initialize(hash)
-    # Cores
     @@id = SecureRandom.uuid.freeze
     @name = hash[:name]
     @genre = hash[:genre]

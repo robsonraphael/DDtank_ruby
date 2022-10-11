@@ -1,26 +1,25 @@
-require_relative '../General/Characters'
+# frozen_string_literal: true
 
+require_relative '../General/characters'
+require 'bcrypt'
+
+# Class base Jogador
 class Player < Characters
-  attr_reader :name, :exp
+  attr_reader :exp, :exp_for_up
 
   def initialize(hash)
     super
-    @username = [:username]
-    @password = [:password]
+    @username = hash[:username].freeze
+    @password = BCrypt::Password.create(hash[:password])
 
     @exp = 0
     @exp_max = 0
     @exp_table = []
+    @@maximum_level = 45
 
-    set_maximum_level
     set_experience_table
     set_exp_max
   end
-
-  def set_maximum_level(level = 45)
-    @@maximum_level = level.to_i.freeze
-  end
-  private :set_maximum_level
 
   def set_experience_table
     @exp_table = Array.new((@@maximum_level - 1))
@@ -49,42 +48,27 @@ class Player < Characters
     return false if max_level?
 
     @exp_max = @exp_table[@level - 1]
+    @exp_for_up = (@exp_max - @exp)
     true
   end
   private :set_exp_max
-
-  def status
-    puts <<~INFO
-      ======================================================
-      Nível: #{@level}
-      Experiencia Atual: #{@exp}
-      Experiencia Para o proximo nivel: #{@exp_max - @exp}
-    INFO
-    showing_attributes
-  end
-  public :status
 
   def max_level?
     @level == @@maximum_level
   end
   private :max_level?
 
-  def increase_exp(exp)
+  def exp_increase(exp)
     return false if max_level?
 
     @exp += exp
     level_up if @exp > @exp_max
     true
   end
-  public :increase_exp
-
-  def decrease_exp(exp)
-    @exp -= exp
-  end
-  private :decrease_exp
+  public :exp_increase
 
   def level_up
-    decrease_exp(@exp_max)
+    @exp = 0
     @level += 1
     @exp_table.delete(@exp_table[@level - 1])
     set_exp_max
