@@ -7,7 +7,7 @@ require 'bcrypt'
 class Player < Characters
   attr_reader :exp, :exp_for_up
 
-  def initialize(hash)
+  def initialize(**hash)
     super
     @username = hash[:username].freeze
     @password = BCrypt::Password.create(hash[:password])
@@ -15,16 +15,16 @@ class Player < Characters
     @exp = 0
     @exp_max = 0
     @exp_table = []
-    @@maximum_level = 45
+    @maximum_level = 45
 
     set_experience_table
     set_exp_max
   end
 
   def set_experience_table
-    @exp_table = Array.new((@@maximum_level - 1))
-    for i in (1..@@maximum_level).to_a
-      @exp_table[i - 1] = (Math.exp(i).to_i * @@maximum_level) / Math.log(@@maximum_level).to_i
+    @exp_table = Array.new((@maximum_level - 1))
+    (1..@maximum_level).each do |i|
+      @exp_table[i - 1] = (Math.exp(i).to_i * @maximum_level) / Math.log(@maximum_level).to_i
     end
     @exp_table
   end
@@ -76,3 +76,12 @@ class Player < Characters
   end
   private :level_up
 end
+
+raphael = Player.new(
+  name: 'Robson', class: 'Wizard', genre: 'Masculino',
+  username: 'clovis34', password: '1233321'
+)
+
+puts raphael.name, raphael.class, raphael.genre
+puts raphael.exp, raphael.exp_for_up, raphael.level
+puts raphael.attributes

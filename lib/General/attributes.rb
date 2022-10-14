@@ -7,17 +7,17 @@ module Attributes
   class Basic
     attr_reader :attributes
 
-    def initialize(*_args)
+    def initialize(**hash)
       @attributes = {
-        attack: @attack = 1,
-        defense: @defense = 1,
-        agility: @agility = 1,
-        luck: @luck = 1
+        attack: @attack = hash[:attack] || 1,
+        defense: @defense = hash[:defense] || 1,
+        agility: @agility = hash[:agility] || 1,
+        luck: @luck = hash[:luck] || 1
       }
     end
 
     # Metodo atualizar atrubutos
-    def up_attributes(level = @level || 1)
+    def up_attributes(level = @level)
       @attributes[:attack] += (1 + level)
       @attributes[:defense] += (2 + level)
       @attributes[:agility] += (2 + level) - (@attack / 2)
@@ -28,24 +28,24 @@ module Attributes
 
   # Class Atributos Personagens
   class Force < Basic
-    def initialize(*_args)
+    def initialize(**hash)
       super
-      @attributes[:damage] = (@damage = 1)
-      @attributes[:armo] = (@armo = 1)
-      @attributes[:hp] = (@hp = 1)
-      @attributes[:hp_max] = (@hp_max = 900)
-      @attributes[:strong] = (@strong = 1)
+      @attributes[:damage] = hash[:damage] || 1
+      @attributes[:armo] = hash[:armo] || 1
+      @attributes[:hp] = hash[:hp] || 1
+      @attributes[:hp_max] = hash[:hp_max] || 900
+      @attributes[:strong] = hash[:strong] || 1
 
       # Força total do personagem
-      @total_force = 100
+      @total_force = hash[:total_foce] || 100
     end
 
-    def up_attributes(level = @level || 1)
-      super
-      @attributes[:damage] += (@attack * 1.5).to_i
-      @attributes[:armo] += (@defense * 1.8).to_i
-      @attributes[:hp_max] += (level * 5.5).to_i
-      @attributes[:strong] += @defense - @agility / 2
+    def up_attributes(**hash)
+      @attributes[:damage] = hash[:damage]
+      @attributes[:armo] = hash[:armo]
+      @attributes[:hp_max] = hash[:hp_max]
+      @attributes[:hp] = @attributes[:hp_max]
+      @attributes[:strong] = hash[:strong]
     end
     private :up_attributes
   end
