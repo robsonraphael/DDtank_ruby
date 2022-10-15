@@ -5,48 +5,74 @@
 module Attributes
   # Class basica dos atributos
   class Basic
-    attr_reader :attributes
-
-    def initialize(**hash)
-      @attributes = {
-        attack: @attack = hash[:attack] || 1,
-        defense: @defense = hash[:defense] || 1,
-        agility: @agility = hash[:agility] || 1,
-        luck: @luck = hash[:luck] || 1
-      }
+    def initialize(level = 1)
+      @attack = generate_attribute(0.85, level)
+      @defense = generate_attribute(0.90, level)
+      @agility = generate_attribute(1, level)
+      @luck = generate_attribute(1.25, level)
     end
 
-    # Metodo atualizar atrubutos
-    def up_attributes(level = @level)
-      @attributes[:attack] += (1 + level)
-      @attributes[:defense] += (2 + level)
-      @attributes[:agility] += (2 + level) - (@attack / 2)
-      @attributes[:luck] += (1 + level)
+    def generate_attribute(constante = 1, level = 1)
+      return 1 if constante.zero? || level.zero?
+      return 1 if level >= 45
+
+      ((constante * level) + Math.exp(level - 1)).floor
     end
-    private :up_attributes
+    private :generate_attribute
+
+    # Metodo atualizar atributos
+    def up_attributes(level = 1)
+      @attack += generate_attribute(0.5, level)
+      @defense += generate_attribute(0.7, level)
+      @agility += generate_attribute(0.8, level)
+      @luck += generate_attribute(0.9, level)
+    end
+    public :up_attributes
+
+    def info
+      puts <<~INFO
+        Attack: #{@attack}
+        Defense: #{@defense}
+        Agility: #{@agility}
+        Luck: #{@luck}
+      INFO
+    end
+    public :info
   end
 
   # Class Atributos Personagens
   class Force < Basic
-    def initialize(**hash)
+    def initialize(level = 1)
       super
-      @attributes[:damage] = hash[:damage] || 1
-      @attributes[:armo] = hash[:armo] || 1
-      @attributes[:hp] = hash[:hp] || 1
-      @attributes[:hp_max] = hash[:hp_max] || 900
-      @attributes[:strong] = hash[:strong] || 1
+      @damage = generate_attribute(@attack, level)
+      @armo = generate_attribute(@defense, level)
+      @hp_max = generate_attribute(720, level)
+      @hp = @hp_max
+      @strong = generate_attribute(@agility, level)
 
       # Força total do personagem
-      @total_force = hash[:total_foce] || 100
+      @total_force = 1000
     end
 
-    def up_attributes(**hash)
-      @attributes[:damage] = hash[:damage]
-      @attributes[:armo] = hash[:armo]
-      @attributes[:hp_max] = hash[:hp_max]
-      @attributes[:hp] = @attributes[:hp_max]
-      @attributes[:strong] = hash[:strong]
+    def up_attributes(level = 1)
+      super
+      @damage = generate_attribute(@attack, level)
+      @armo = generate_attribute(@defense, level)
+      @hp_max += generate_attribute(20, level)
+      @hp = @hp_max
+      @strong = generate_attribute(@agility, level)
     end
-    private :up_attributes
+    public :up_attributes
+
+    def info
+      super
+      puts <<~INFO
+        Damage: #{@damage}
+        Armo: #{@armo}
+        HP: #{@hp_max}
+        Strong: #{@strong}
+      INFO
+    end
+    public :info
   end
 end
